@@ -29,6 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.utn.frd.dds.etp.dto.RequestOrderDTO;
+import org.utn.frd.dds.etp.dto.ResponseOrderDTO;
+import org.utn.frd.dds.etp.entity.Order;
+import org.utn.frd.dds.etp.service.OrderService;
 
 @RestController
 public class OrderController {
@@ -36,52 +40,52 @@ public class OrderController {
 	private static final Log log = LogFactory.getLog(OrderController.class);
 	
     @Autowired
-    OrderService orderService;	
+	OrderService orderService;
 	
 	@RequestMapping("/hello")
 	@ResponseBody
 	String home() {
 		
-		log.info("Hola Pedidos!!");
+		log.info("Hello Orders!!");
 		
-		return "Hola Pedidos!!";
+		return "Hello Orders!!";
 	}	
 	
-    @GetMapping("/pedidos/{id}")    
-    private ResponseEntity<Object> getPedido(@PathVariable("id") String id) {
+    @GetMapping("/order/find/{id}")
+    private ResponseEntity<Object> getOrder(@PathVariable("uuid") String uuid) {
 
-    	log.info("Consultando el pedido con id: " + id);
-    	
-    	Map<String, String> errors = new HashMap<String, String>();
-    	errors.put("error", "Pedido no encontrado");
-    	
-    	PedidoCabecera pedido = null;
+    	log.info("Consultando la order con uuid: " + uuid);
+
+    	Order order = null;
     	
     	try {
-    		pedido = pedidoService.getPedidoById(id);
+    		order = orderService.getOrderById(uuid);
     		
-    		if(pedido != null)
-    			return ResponseEntity.status(HttpStatus.OK).body(pedido);
+    		if(order != null)
+    			return ResponseEntity.status(HttpStatus.OK).body(order);
     		
     	} catch (Exception e) {
     		    		
-    		log.error("Error al consultar el pedido con id: " + id, e);
-    	}    	
-    	
+    		log.error("Error al consultar la orden con uuid: " + uuid, e);
+    	}
+
+		Map<String, String> errors = new HashMap<String, String>();
+		errors.put("error", "Orden no encontrada");
+
     	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     	
     }
 
-    @DeleteMapping("/pedidos/{id}")
-    private ResponseEntity<Object> deletePedidos(@PathVariable("id") String id) {
+    @DeleteMapping("/order/delete/{id}")
+    private ResponseEntity<Object> delete(@PathVariable("uuid") String uuid) {
         
-    	log.info("Eliminando el PedidoDetalle con id: " + id);
+    	log.info("Eliminando la orden con uuid: " + uuid);
     	    	
     	try {    		
-    		pedidoService.delete(id);
+    		orderService.delete(uuid);
     	} catch (Exception e) {
     		
-    		log.error("Error al intentar eliminar un pedido. id: " + id , e);
+    		log.error("Error al intentar eliminar la order. uuid: " + uuid , e);
     		    	        	
         	JsonObject errors = new JsonObject();
 	    	
@@ -96,13 +100,13 @@ public class OrderController {
 
     /**
      * 
-     * @param pedido
+     * @param requestOrderDTO
      * @param bindingResult
      * @return
      */
-    @PostMapping("/pedidos")
+    @PostMapping("/order/save")
     @ResponseStatus(code = HttpStatus.CREATED)
-    private ResponseEntity<String>  savePedido(@Valid @RequestBody PedidoDTO pedido, BindingResult bindingResult) {
+    private ResponseEntity<String> save(@Valid @RequestBody RequestOrderDTO requestOrderDTO, BindingResult bindingResult) {
     	
 		if(bindingResult.hasErrors()){
 			//handle errors and return
@@ -131,31 +135,31 @@ public class OrderController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
 		}
     	
-    	log.info("Creando un Pedido: " + pedido.toString());
+    	log.info("Creando la Orden: " + requestOrderDTO.toString());
     	
     	Map<String, String> errors = new HashMap<String, String>();
     	errors.put("error", "Error al crear un Pedido");    	
     	
-    	RespuestaPedidoDTO respuestaPedido = null;                
+    	ResponseOrderDTO responseOrderDTO = null;
         
     	String json = "";
     			
         try {
+
+			responseOrderDTO = orderService.saveOrUpdate(requestOrderDTO);
         	
-        	respuestaPedido = pedidoService.saveOrUpdate(pedido);
+        	json = new Gson().toJson(responseOrderDTO);
         	
-        	json = new Gson().toJson(respuestaPedido);
-        	
-        	if(respuestaPedido != null)
+        	if(responseOrderDTO != null)
         		return ResponseEntity.status(HttpStatus.CREATED).body(json.toString());
         	
         } catch(Exception e) {
         	
-        	log.error("Error al crear el pedido: " + pedido, e);
+        	log.error("Error al crear la orden: " + requestOrderDTO, e);
         	
         	JsonObject jsonObject = new JsonObject();
         	
-        	jsonObject.addProperty("errror", "Error al crear el pedido: " + pedido);
+        	jsonObject.addProperty("errror", "Error al crear la orden: " + requestOrderDTO);
         	
         	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonObject.toString());
         }
@@ -165,24 +169,24 @@ public class OrderController {
     }	
 	   
     /**
-     * Listar pedidos por fecha
+     * Listar Ordenes por fecha
 	 * 	Method: GET
-	 * Path: /pedidos?fecha=2020-05-26
+	 * Path: /orders?fecha=2020-05-26
 	 * Response 200
      * 
-     * @param fecha
-     * @return listado de pedidos. Array Json 
+     * @param date
+     * @return listado de ordenes. Array Json
      */
-    @GetMapping("/pedidos")
-    private ResponseEntity<String> getPedidosByFecha( @RequestParam("fecha") String fecha) {
+    @GetMapping("/orders")
+    private ResponseEntity<String> getOrdersByDate( @RequestParam("date") String date) {
     	
-    	log.info("Buscando pedidos por fecha = " + fecha);
+    	log.info("Buscando ordenes por fecha = " + date);
     	
-    	LocalDate localDate = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    	LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     	
-    	List<RespuestaPedidoDTO> listaRespuestaPedidoDTO = pedidoService.getPedidosByFecha(localDate);
+    	List<ResponseOrderDTO> listResponseOrderDTO = orderService.getOrdersByDate(localDate);
     	    	
-    	String json = new Gson().toJson(listaRespuestaPedidoDTO);
+    	String json = new Gson().toJson(listResponseOrderDTO);
     	
     	return ResponseEntity.status(HttpStatus.OK).body(json);
     	

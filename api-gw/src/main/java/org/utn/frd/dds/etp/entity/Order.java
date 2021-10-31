@@ -20,10 +20,10 @@ public class Order {
     @Column(name="localDateTime")
     private LocalDateTime localDateTime;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "local_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
     private Local local;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
     public String getUuid() {

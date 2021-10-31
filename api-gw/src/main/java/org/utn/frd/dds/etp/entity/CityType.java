@@ -36,9 +36,11 @@ public class CityType {
         this.description = description;
     }
 
-    public CityType(String uuid, String description) {
-        this.uuid = uuid;
-        this.description = description;
+    @Override
+    public String toString() {
+        return "CityType{" +
+                "uuid='" + uuid + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
 }

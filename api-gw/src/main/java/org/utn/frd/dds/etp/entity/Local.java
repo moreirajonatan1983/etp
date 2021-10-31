@@ -33,11 +33,11 @@ public class Local {
         this.uuid = uuid;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 

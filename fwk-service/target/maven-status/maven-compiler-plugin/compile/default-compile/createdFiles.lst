@@ -1,6 +1,0 @@
-com/etp/crud/service/CrudService.class
-com/etp/crud/exception/EntityExistsException.class
-com/etp/crud/repository/CrudRepository.class
-com/etp/crud/controller/impl/CrudControllerImpl.class
-com/etp/crud/service/impl/CrudServiceImpl.class
-com/etp/crud/controller/CrudController.class

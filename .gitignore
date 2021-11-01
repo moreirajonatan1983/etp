@@ -5,3 +5,4 @@ api-gw/.idea/encodings.xml
 api-gw/api-gw.iml
 api-gw/target/
 
+/fwk-service/target/

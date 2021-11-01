@@ -1,0 +1,6 @@
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/service/CrudService.java
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/service/impl/CrudServiceImpl.java
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/controller/impl/CrudControllerImpl.java
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/exception/EntityExistsException.java
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/controller/CrudController.java
+/home/jony/developers/proyectos/facultad/dds/etp/fwk-service/src/main/java/com/etp/crud/repository/CrudRepository.java

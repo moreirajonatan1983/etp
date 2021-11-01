@@ -1,13 +1,8 @@
 package org.utn.frd.dds.etp.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,54 +10,48 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.utn.frd.dds.etp.dto.RequestProductDTO;
+import org.utn.frd.dds.etp.dto.ResponseProductDTO;
+import org.utn.frd.dds.etp.entity.Product;
+import org.utn.frd.dds.etp.service.impl.ProductServiceImpl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import org.utn.frd.dds.etp.dto.RequestOrderDTO;
-import org.utn.frd.dds.etp.dto.ResponseOrderDTO;
-import org.utn.frd.dds.etp.entity.Order;
-import org.utn.frd.dds.etp.service.impl.OrderServiceImpl;
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-public class OrderController {
+public class ProductController {
 
-	private static final Log log = LogFactory.getLog(OrderController.class);
+	private static final Log log = LogFactory.getLog(ProductController.class);
 	
     @Autowired
-	OrderServiceImpl orderService;
+	ProductServiceImpl productService;
 	
 	@RequestMapping("/hello")
 	@ResponseBody
 	String home() {
 		
-		log.info("Hello Orders!!");
+		log.info("Hello Products!!");
 		
-		return "Hello Orders!!";
+		return "Hello Products!!";
 	}	
 	
-    @GetMapping("/order/find/{id}")
-    private ResponseEntity<Object> getOrder(@PathVariable("uuid") String uuid) {
+    @GetMapping("/product/find/{id}")
+    private ResponseEntity<Object> getProduct(@PathVariable("uuid") String uuid) {
 
-    	log.info("Consultando la order con uuid: " + uuid);
+    	log.info("Consultando la product con uuid: " + uuid);
 
-    	Order order = null;
+    	Product product = null;
     	
     	try {
-    		order = orderService.getOrderById(uuid);
+    		product = productService.getProductById(uuid);
     		
-    		if(order != null)
-    			return ResponseEntity.status(HttpStatus.OK).body(order);
+    		if(product != null)
+    			return ResponseEntity.status(HttpStatus.OK).body(product);
     		
     	} catch (Exception e) {
     		    		
@@ -76,16 +65,16 @@ public class OrderController {
     	
     }
 
-    @DeleteMapping("/order/delete/{id}")
+    @DeleteMapping("/product/delete/{id}")
     private ResponseEntity<Object> delete(@PathVariable("uuid") String uuid) {
         
     	log.info("Eliminando la orden con uuid: " + uuid);
     	    	
     	try {    		
-    		orderService.delete(uuid);
+    		productService.delete(uuid);
     	} catch (Exception e) {
     		
-    		log.error("Error al intentar eliminar la order. uuid: " + uuid , e);
+    		log.error("Error al intentar eliminar la product. uuid: " + uuid , e);
     		    	        	
         	JsonObject errors = new JsonObject();
 	    	
@@ -100,13 +89,13 @@ public class OrderController {
 
     /**
      * 
-     * @param requestOrderDTO
+     * @param requestProductDTO
      * @param bindingResult
      * @return
      */
-    @PostMapping("/order/save")
+    @PostMapping("/product/save")
     @ResponseStatus(code = HttpStatus.CREATED)
-    private ResponseEntity<String> save(@Valid @RequestBody RequestOrderDTO requestOrderDTO, BindingResult bindingResult) {
+    private ResponseEntity<String> save(@Valid @RequestBody RequestProductDTO requestProductDTO, BindingResult bindingResult) {
     	
 		if(bindingResult.hasErrors()){
 			//handle errors and return
@@ -135,31 +124,31 @@ public class OrderController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors.toString());
 		}
     	
-    	log.info("Creando la Orden: " + requestOrderDTO.toString());
+    	log.info("Creando la Orden: " + requestProductDTO.toString());
     	
     	Map<String, String> errors = new HashMap<String, String>();
     	errors.put("error", "Error al crear un Pedido");    	
     	
-    	ResponseOrderDTO responseOrderDTO = null;
+    	ResponseProductDTO responseProductDTO = null;
         
     	String json = "";
     			
         try {
 
-			responseOrderDTO = orderService.saveOrUpdate(requestOrderDTO);
+			responseProductDTO = productService.saveOrUpdate(requestProductDTO);
         	
-        	json = new Gson().toJson(responseOrderDTO);
+        	json = new Gson().toJson(responseProductDTO);
         	
-        	if(responseOrderDTO != null)
+        	if(responseProductDTO != null)
         		return ResponseEntity.status(HttpStatus.CREATED).body(json.toString());
         	
         } catch(Exception e) {
         	
-        	log.error("Error al crear la orden: " + requestOrderDTO, e);
+        	log.error("Error al crear la orden: " + requestProductDTO, e);
         	
         	JsonObject jsonObject = new JsonObject();
         	
-        	jsonObject.addProperty("errror", "Error al crear la orden: " + requestOrderDTO);
+        	jsonObject.addProperty("errror", "Error al crear la orden: " + requestProductDTO);
         	
         	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonObject.toString());
         }
@@ -171,22 +160,22 @@ public class OrderController {
     /**
      * Listar Ordenes por fecha
 	 * 	Method: GET
-	 * Path: /orders?fecha=2020-05-26
+	 * Path: /products?fecha=2020-05-26
 	 * Response 200
      * 
      * @param date
      * @return listado de ordenes. Array Json
      */
-    @GetMapping("/orders")
-    private ResponseEntity<String> getOrdersByDate( @RequestParam("date") String date) {
+    @GetMapping("/products")
+    private ResponseEntity<String> getProductsByDate( @RequestParam("date") String date) {
     	
     	log.info("Buscando ordenes por fecha = " + date);
     	
     	LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     	
-    	List<ResponseOrderDTO> listResponseOrderDTO = orderService.getOrdersByDate(localDate);
+    	List<ResponseProductDTO> listResponseProductDTO = productService.getProductsByDate(localDate);
     	    	
-    	String json = new Gson().toJson(listResponseOrderDTO);
+    	String json = new Gson().toJson(listResponseProductDTO);
     	
     	return ResponseEntity.status(HttpStatus.OK).body(json);
     	

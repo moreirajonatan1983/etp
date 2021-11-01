@@ -1,9 +1,8 @@
-package org.utn.frd.dds.etp.service;
+package org.utn.frd.dds.etp.service.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.utn.frd.dds.etp.dto.RequestOrderDTO;
 import org.utn.frd.dds.etp.dto.ResponseOrderDTO;
 import org.utn.frd.dds.etp.entity.Order;
@@ -13,22 +12,18 @@ import org.utn.frd.dds.etp.util.OrderUtil;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author jonatan.moreira
  *
  */
-@Service
-public class OrderService {
+@org.springframework.stereotype.Service
+public class OrderServiceImpl implements Service {
 
-    private static final Log log = LogFactory.getLog(OrderService.class);
+    private static final Log log = LogFactory.getLog(OrderServiceImpl.class);
 
     @Autowired
     OrderRepository orderRepository;
-
-//    @Autowired
-//    OrderRepository pedidoCabeceraRepository;
 
     public List<Order> getAll() {
 
@@ -76,9 +71,6 @@ public class OrderService {
 //        order.setUser(requestOrderDTO.getUser());
 //        order.setLocalDateTime(LocalDateTime.now());
 
-        Double montoTotal = 0.0;
-
-        int countProductos = 0;
 
 //        List<OrderItems> orderItems = new ArrayList<OrderItems>();
 //

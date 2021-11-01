@@ -33,19 +33,14 @@ public class OrderService {
     public List<Order> getAll() {
 
         List<Order> orders = new ArrayList<Order>();
-        orderRepository.findAll().forEach(pedido -> orderRepository.add(pedido));
+        //  orderRepository.findAll().forEach(order -> orderRepository.add(order));
 
         return orders;
     }
 
     public Order getOrderById(String id) {
 
-        Optional<Order> order = orderRepository.findOrderById(id);
-
-        if(order != null)
-            return order.get();
-        else
-            return null;
+        return orderRepository.findById(id).get();
     }
 
     /**
@@ -59,7 +54,7 @@ public class OrderService {
         log.info("OrderService.getOrdersByFecha Init: " + date);
 
         List<Order> orders = new ArrayList<Order>();
-        orderRepository.findPorDate(date).forEach(order -> orders.add((Order) order));
+        orderRepository.findByDate(date).forEach(order -> orders.add((Order) order));
 
         return OrderUtil.getListResponseOrderDTO(orders);
 
@@ -148,7 +143,7 @@ public class OrderService {
      */
     public void delete(String id) {
 
-        this.orderRepository.delete(id);
+        this.orderRepository.deleteById(id);
 
     }
 

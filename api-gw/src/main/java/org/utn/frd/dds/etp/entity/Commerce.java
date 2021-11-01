@@ -21,7 +21,7 @@ public class Commerce {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String uuid;
 
-    @OneToMany(mappedBy = "locals_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "uuid", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Local> locals;
 
     public String getUuid() {

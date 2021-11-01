@@ -17,7 +17,8 @@ public class OrderItem {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String uuid;
 
-    @OneToOne(mappedBy = "product_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private Product product;
 
     @Column(name="presentation")
@@ -26,7 +27,8 @@ public class OrderItem {
     @Column(name="count")
     private Integer count;
 
-    @OneToOne(mappedBy = "order_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private Order order;
 
     public String getUuid() {

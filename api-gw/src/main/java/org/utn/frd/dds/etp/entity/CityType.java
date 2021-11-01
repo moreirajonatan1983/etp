@@ -17,7 +17,7 @@ public class CityType {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String uuid;
 
-    @Column(name="false", nullable=false, length=50)
+    @Column(name="description", nullable=false, length=50)
     private String description;
 
     public String getUuid() {

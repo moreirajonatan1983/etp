@@ -20,7 +20,8 @@ public class State {
     @Column(name="name", nullable=false, length=50)
     private String name;
 
-    @OneToOne(mappedBy = "country_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "country_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private Country country;
 
     public String getUuid() {

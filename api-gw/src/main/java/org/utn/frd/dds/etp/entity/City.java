@@ -20,10 +20,12 @@ public class City {
     @Column(name="name", nullable=true, length=50)
     private String name;
 
-    @OneToOne(mappedBy = "state_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "state_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private State state;
 
-    @OneToOne(mappedBy = "cityType_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "city_type_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private CityType cityType;
 
     public String getUuid() {

@@ -13,7 +13,8 @@ public class Local {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String uuid;
 
-    @OneToOne(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "city_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private City city;
 
     @Column(name="Address", nullable=true, length=50)
@@ -22,7 +23,8 @@ public class Local {
     @Column(name="AddressNo", nullable=true, length=50)
     private String addressNo;
 
-    @OneToOne(mappedBy = "commerce_uuid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "commerce_uuid")
+    @OneToOne(fetch = FetchType.EAGER)
     private Commerce commerce;
 
     public String getUuid() {

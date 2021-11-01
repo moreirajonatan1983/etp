@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.utn.frd.dds.etp.controller.OrderController;
+import org.utn.frd.dds.etp.controller.ProductController;
 import org.utn.frd.dds.etp.entity.Order;
+import org.utn.frd.dds.etp.entity.Product;
 import org.utn.frd.dds.etp.service.impl.OrderServiceImpl;
 
 @RestController
@@ -17,10 +19,10 @@ import org.utn.frd.dds.etp.service.impl.OrderServiceImpl;
 public class OrderControllerImpl extends CrudControllerImpl<Order, String> implements OrderController {
 
 	private static final Log log = LogFactory.getLog(OrderController.class);
-	
+
     @Autowired
-	OrderServiceImpl service;
-	
+	OrderServiceImpl orderService;
+
 	@RequestMapping("/hello")
 	@ResponseBody
 	String home() {
@@ -50,7 +52,7 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 	// @ApiOperation(value = "Obtener codigo QR", notes = "Obtener codigo QR")
 	public ResponseEntity<HttpStatus> getQR(String orderUUID){
 
-		service.getQR(orderUUID);
+		orderService.getQR(orderUUID);
 
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
@@ -59,7 +61,7 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 	// @ApiOperation(value = "Obtener CSV de la Orden", notes = "Obtener CSV de la Orden")
 	public ResponseEntity<HttpStatus> getCSV(String orderUUID){
 
-		service.getCSV(orderUUID);
+		orderService.getCSV(orderUUID);
 
 		return ResponseEntity.ok(HttpStatus.OK);
 	}

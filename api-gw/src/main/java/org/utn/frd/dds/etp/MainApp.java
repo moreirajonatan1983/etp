@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class MainApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(org.utn.frd.dds.etp.MainApp.class, args);
+
+        SpringApplication.run(MainApp.class, args);
     }
 
 }

@@ -1,6 +1,7 @@
 package org.utn.frd.dds.etp.controller.impl;
 
 import com.etp.crud.controller.impl.CrudControllerImpl;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,16 @@ public class ProductControllerImpl extends CrudControllerImpl<Product, String> i
 		return "Hello Products!!";
 	}
 
-	@RequestMapping(value="/create/{productUUID}", method= RequestMethod.POST)
-	// @ApiOperation(value = "Crear una orden", notes = "Crear una nueva Orden")
+	@RequestMapping(value="/create", method= RequestMethod.POST)
+	@ApiOperation(value = "Crear un producto", notes = "Crear un producto")
 	public ResponseEntity<Product> create(@RequestBody Product product){
 
 		return ResponseEntity.ok(super.service.save(product));
 	}
 
-	@RequestMapping(value="/delete/{productUUID}",method = RequestMethod.DELETE)
-	// @ApiOperation(value = "Eliminar una orden", notes = "Eliminar una Orden")
-	public ResponseEntity<HttpStatus> delete(String uuid){
+	@RequestMapping(value="/delete/{uuid}",method = RequestMethod.DELETE)
+	@ApiOperation(value = "Eliminar un producto", notes = "Eliminar un producto")
+	public ResponseEntity<HttpStatus> delete(@PathVariable String uuid){
 
 		super.service.deleteById(uuid);
 

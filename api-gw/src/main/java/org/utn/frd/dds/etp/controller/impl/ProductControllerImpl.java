@@ -24,15 +24,6 @@ public class ProductControllerImpl extends CrudControllerImpl<Product, String> i
 
 	private static final Log log = LogFactory.getLog(ProductController.class);
 
-	@RequestMapping("/hello")
-	@ResponseBody
-	String home() {
-
-		log.info("Hello Products!!");
-
-		return "Hello Products!!";
-	}
-
 	@RequestMapping(value="/create", method= RequestMethod.POST)
 	@ApiOperation(value = "Crear un producto", notes = "Crear un producto.")
 	public ResponseEntity<Product> create(@RequestBody Product product){

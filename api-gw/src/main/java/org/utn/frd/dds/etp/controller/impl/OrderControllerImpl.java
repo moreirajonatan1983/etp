@@ -26,15 +26,6 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
     @Autowired
 	OrderServiceImpl orderService;
 
-	@RequestMapping("/hello")
-	@ResponseBody
-	String home() {
-
-		log.info("Hello Orders!!");
-
-		return "Hello Orders!!";
-	}
-
 	@RequestMapping(value="/create", method= RequestMethod.POST)
 	@ApiOperation(value = "Crear una orden", notes = "Crear una nueva Orden")
 	public ResponseEntity<Order> create(@RequestBody Order order){

@@ -21,15 +21,6 @@ public class UserControllerImpl extends CrudControllerImpl<User, String> impleme
 
 	private static final Log log = LogFactory.getLog(UserController.class);
 
-	@RequestMapping("/hello")
-	@ResponseBody
-	String home() {
-
-		log.info("Hello Users!!");
-
-		return "Hello Users!!";
-	}
-
 	@RequestMapping(value="/create", method= RequestMethod.POST)
 	@ApiOperation(value = "Crear un usuario", notes = "Crear un usuario")
 	public ResponseEntity<User> create(@RequestBody User product){

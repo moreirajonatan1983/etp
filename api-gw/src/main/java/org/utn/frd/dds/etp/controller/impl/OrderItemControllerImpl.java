@@ -22,15 +22,6 @@ public class OrderItemControllerImpl extends CrudControllerImpl<OrderItem, Strin
 
 	private static final Log log = LogFactory.getLog(ProductController.class);
 
-	@RequestMapping("/hello")
-	@ResponseBody
-	String home() {
-
-		log.info("Hello Order Items!!");
-
-		return "Hello Order Items!!";
-	}
-
 	@RequestMapping(value="/add", method= RequestMethod.POST)
 	@ApiOperation(value = "Agregar un item a una orden", notes = "Agregar un item a una orden")
 	public ResponseEntity<OrderItem> create(@RequestBody OrderItem orderItem){

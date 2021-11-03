@@ -1,24 +1,33 @@
 package org.utn.frd.dds.etp.controller.impl;
 
 import com.etp.crud.controller.impl.CrudControllerImpl;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import org.utn.frd.dds.etp.controller.OrderController;
+import org.utn.frd.dds.etp.dto.RequestOrderDTO;
+import org.utn.frd.dds.etp.dto.ResponseOrderDTO;
+import org.utn.frd.dds.etp.dto.ResponseUserDTO;
 import org.utn.frd.dds.etp.entity.Order;
 import org.utn.frd.dds.etp.service.impl.OrderServiceImpl;
+import org.utn.frd.dds.etp.util.OrderUtil;
+import org.utn.frd.dds.etp.util.UserUtil;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("orders")
+@Api(tags ="Orders", description = "Manejo de ordenes.", position = 2)
 public class OrderControllerImpl extends CrudControllerImpl<Order, String> implements OrderController {
 
 	private static final Log log = LogFactory.getLog(OrderController.class);
@@ -28,32 +37,53 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 
 	@RequestMapping(value="/create", method= RequestMethod.POST)
 	@ApiOperation(value = "Crear una orden", notes = "Crear una nueva Orden")
-	public ResponseEntity<Order> create(@RequestBody Order order){
+	public ResponseEntity<Order> create(@RequestBody RequestOrderDTO requestOrderDTO, BindingResult bindingResult){
 
-		return ResponseEntity.ok(super.service.save(order));
+		if(!bindingResult.hasErrors()){
+
+			Order order = super.service.save(OrderUtil.getOrder(requestOrderDTO));
+
+			if(order != null) {
+
+				return ResponseEntity.ok(order);
+			}
+		}
+
+		return ResponseEntity.badRequest().build();
 	}
 
 	@RequestMapping(value="/delete/{uuid}",method = RequestMethod.DELETE)
 	@ApiOperation(value = "Eliminar una orden", notes = "Eliminar una Orden")
 	public ResponseEntity<HttpStatus> delete(@PathVariable String uuid){
 
-		super.service.deleteById(uuid);
+		try{
+			super.service.deleteById(uuid);
 
-		return ResponseEntity.ok(HttpStatus.OK);
+			return ResponseEntity.ok(HttpStatus.OK);
+		} catch (EntityNotFoundException e) {
+
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	@RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar Orden por Id", notes = "Buscar Orden por Id")
-	public Optional<Order> findById(@PathVariable String uuid){
+	public ResponseEntity<ResponseOrderDTO>  findOrderById(@PathVariable String uuid){
 
-		return super.service.findById(uuid);
+		Optional<Order> order = super.service.findById(uuid);
+
+		ResponseOrderDTO responseOrderDTO = OrderUtil.getResponseOrderDTO(order.get());
+
+		return ResponseEntity.ok(responseOrderDTO);
 	}
 
 	@RequestMapping(value="/findAll/{uuid}", method= RequestMethod.POST)
-	@ApiOperation(value = "Buscar una orden de un usuario", notes = "Buscar una orden de un usuario")
-	public List<Order> findAll(@PathVariable String uuid){
+	@ApiOperation(value = "Buscar todas las ordenes de un usuario", notes = "Buscar todas las ordenes de un usuario.")
+	public ResponseEntity<List<Order> >findAll(@PathVariable String uuid){
 
-		return super.service.findById(uuid).stream().collect(Collectors.toList());
+		List<Order> orders = super.service.findById(uuid).stream().collect(Collectors.toList());
+
+		return ResponseEntity.ok(orders);
 	}
 
 	@RequestMapping(value="/qr/{uuid}",method = RequestMethod.GET)

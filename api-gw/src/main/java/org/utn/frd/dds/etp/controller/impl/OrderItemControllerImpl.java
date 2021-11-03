@@ -1,6 +1,7 @@
 package org.utn.frd.dds.etp.controller.impl;
 
 import com.etp.crud.controller.impl.CrudControllerImpl;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("order_items")
+@Api(tags ="Order Items", description = "Manejo de los items de una orden.", position = 3)
 public class OrderItemControllerImpl extends CrudControllerImpl<OrderItem, String> implements OrderItemController {
 
 	private static final Log log = LogFactory.getLog(ProductController.class);
@@ -31,25 +33,25 @@ public class OrderItemControllerImpl extends CrudControllerImpl<OrderItem, Strin
 
 	@RequestMapping(value="/delete/{uuid}",method = RequestMethod.DELETE)
 	@ApiOperation(value = "Eliminar un item de una orden", notes = "Eliminar un item de orden")
-	public ResponseEntity<HttpStatus> delete(@PathVariable String uuid){
+	public ResponseEntity delete(@PathVariable String uuid){
 
 		super.service.deleteById(uuid);
 
-		return ResponseEntity.ok(HttpStatus.OK);
+		return ResponseEntity.ok().build();
 	}
 
-	@RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
-	@ApiOperation(value = "Buscar item de una orden por uuid", notes = "Buscar item de una orden por uuid.")
+	// @RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
+	// @ApiOperation(value = "Buscar item de una orden por uuid", notes = "Buscar item de una orden por uuid.")
 	public Optional<OrderItem> findById(@PathVariable String uuid){
 
 		return super.service.findById(uuid);
 	}
 
-	@RequestMapping(value="/findAll/{uuid}", method= RequestMethod.POST)
-	@ApiOperation(value = "Buscar todos los items de una orden", notes = "Buscar todos los items de unar orden.")
-	public List<OrderItem> findAll(@PathVariable String uuid){
+	@RequestMapping(value="/findAll/{uuidOrder}", method= RequestMethod.POST)
+	@ApiOperation(value = "Buscar todos los items de una orden", notes = "Buscar todos los items de una orden.")
+	public List<OrderItem> findAll(@PathVariable String uuidOrder){
 
-		return super.service.findById(uuid).stream().collect(Collectors.toList());
+		return super.service.findById(uuidOrder).stream().collect(Collectors.toList());
 	}
 
 }

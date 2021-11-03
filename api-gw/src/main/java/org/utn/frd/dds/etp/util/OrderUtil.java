@@ -1,7 +1,10 @@
 package org.utn.frd.dds.etp.util;
 
+import org.utn.frd.dds.etp.dto.RequestOrderDTO;
+import org.utn.frd.dds.etp.dto.RequestOrderItemDTO;
 import org.utn.frd.dds.etp.dto.ResponseOrderDTO;
 import org.utn.frd.dds.etp.entity.Order;
+import org.utn.frd.dds.etp.entity.OrderItem;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,10 +13,27 @@ import java.util.Optional;
 
 public class OrderUtil {
 
+    public static Order getOrder(RequestOrderDTO requestOrderDTO) {
+
+        Order order = new Order();
+
+        order.setLocalDateTime(requestOrderDTO.getLocalDateTime());
+        order.setLocal(requestOrderDTO.getLocal());
+        order.setUser(requestOrderDTO.getUser());
+
+        return order;
+    }
 
     public static ResponseOrderDTO getResponseOrderDTO(Order order) {
 
-        return new ResponseOrderDTO();
+        ResponseOrderDTO responseOrderDTO = new ResponseOrderDTO();
+
+        responseOrderDTO.setUuid(order.getUuid());
+        responseOrderDTO.setLocal(order.getLocal());
+        responseOrderDTO.setLocalDateTime(order.getLocalDateTime());
+        responseOrderDTO.setUser(order.getUser());
+
+        return responseOrderDTO;
     }
 
     public static List<ResponseOrderDTO> getListResponseOrderDTO(List<Order> listOrder) {

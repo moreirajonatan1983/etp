@@ -4,7 +4,6 @@ import com.etp.crud.controller.impl.CrudControllerImpl;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,19 +50,26 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 	}
 
 	@RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
-	@ApiOperation(value = "Crear una orden", notes = "Crear una nueva Orden")
+	@ApiOperation(value = "Buscar Orden por Id", notes = "Buscar Orden por Id")
 	public Optional<Order> findById(@PathVariable String uuid){
 
-
+		super.service.findById(uuid).get();
 		return null;
-		//return super.service.findById(orderUUID).get();
+	}
+
+	@RequestMapping(value="/findAll/{userUUID}", method= RequestMethod.POST)
+	@ApiOperation(value = "Buscar Orden de un usuario", notes = "Buscar Orden de un usuario")
+	public Optional<Order> findAll(String userUUID){
+
+		super.service.findById(userUUID).get();
+		return null;
 	}
 
 	@RequestMapping(value="/qr/{uuid}",method = RequestMethod.GET)
 	@ApiOperation(value = "Obtener codigo QR", notes = "Obtener codigo QR")
-	public ResponseEntity<HttpStatus> getQR(@PathVariable String orderUUID){
+	public ResponseEntity<HttpStatus> getQR(@PathVariable String uuid){
 
-		orderService.getQR(orderUUID);
+		orderService.getQR(uuid);
 
 		return ResponseEntity.ok(HttpStatus.OK);
 	}

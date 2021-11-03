@@ -79,7 +79,7 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 
 	@RequestMapping(value="/findAll/{uuid}", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar todas las ordenes de un usuario", notes = "Buscar todas las ordenes de un usuario.")
-	public ResponseEntity<List<Order> >findAll(@PathVariable String uuid){
+	public ResponseEntity<List<Order>>findAll(@PathVariable String uuid){
 
 		List<Order> orders = super.service.findById(uuid).stream().collect(Collectors.toList());
 

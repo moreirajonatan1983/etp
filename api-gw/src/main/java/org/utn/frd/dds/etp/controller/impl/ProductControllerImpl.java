@@ -59,10 +59,10 @@ public class ProductControllerImpl extends CrudControllerImpl<Product, String> i
 
 	@RequestMapping(value="/findAll", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar todos los productos", notes = "Buscar todos los productos.")
-	public List<Product> findAll(){
+	public ResponseEntity<List<Product>> productFindAll(){
 
-		List<Product> aa = Lists.newArrayList(super.service.findAll());
+		List<Product> products = Lists.newArrayList(super.service.findAll());
 
-		return aa;
+		return ResponseEntity.ok(products);
 	}
 }

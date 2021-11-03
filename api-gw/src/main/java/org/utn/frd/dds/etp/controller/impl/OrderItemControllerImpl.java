@@ -7,12 +7,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.utn.frd.dds.etp.controller.OrderItemController;
 import org.utn.frd.dds.etp.controller.ProductController;
+import org.utn.frd.dds.etp.dto.RequestOrderItemDTO;
 import org.utn.frd.dds.etp.entity.OrderItem;
 import org.utn.frd.dds.etp.entity.Product;
+import org.utn.frd.dds.etp.util.OrderItemUtil;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,18 +30,33 @@ public class OrderItemControllerImpl extends CrudControllerImpl<OrderItem, Strin
 
 	@RequestMapping(value="/add", method= RequestMethod.POST)
 	@ApiOperation(value = "Agregar un item a una orden", notes = "Agregar un item a una orden")
-	public ResponseEntity<OrderItem> create(@RequestBody OrderItem orderItem){
+	public ResponseEntity<OrderItem> create(@RequestBody RequestOrderItemDTO requestOrderItemDTO, BindingResult bindingResult){
 
-		return ResponseEntity.ok(super.service.save(orderItem));
+		if(!bindingResult.hasErrors()){
+
+			OrderItem orderItem = super.service.save(OrderItemUtil.getOrderItem(requestOrderItemDTO));
+
+			if(orderItem != null) {
+
+				return ResponseEntity.ok(orderItem);
+			}
+		}
+
+		return ResponseEntity.badRequest().build();
 	}
 
 	@RequestMapping(value="/delete/{uuid}",method = RequestMethod.DELETE)
 	@ApiOperation(value = "Eliminar un item de una orden", notes = "Eliminar un item de orden")
 	public ResponseEntity delete(@PathVariable String uuid){
 
-		super.service.deleteById(uuid);
+		try{
+			super.service.deleteById(uuid);
 
-		return ResponseEntity.ok().build();
+			return ResponseEntity.ok(HttpStatus.OK);
+		} catch (EntityNotFoundException e) {
+
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	// @RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
@@ -49,9 +68,11 @@ public class OrderItemControllerImpl extends CrudControllerImpl<OrderItem, Strin
 
 	@RequestMapping(value="/findAll/{uuidOrder}", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar todos los items de una orden", notes = "Buscar todos los items de una orden.")
-	public List<OrderItem> findAll(@PathVariable String uuidOrder){
+	public ResponseEntity<List<OrderItem>> findAll(@PathVariable String uuidOrder){
 
-		return super.service.findById(uuidOrder).stream().collect(Collectors.toList());
+		List<OrderItem> orderItems = super.service.findById(uuidOrder).stream().collect(Collectors.toList());
+
+		return ResponseEntity.ok(orderItems);
 	}
 
 }

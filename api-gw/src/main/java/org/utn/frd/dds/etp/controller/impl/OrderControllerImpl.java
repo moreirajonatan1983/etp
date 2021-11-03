@@ -53,13 +53,13 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 
 	@RequestMapping(value="/find/{uuid}", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar Orden por Id", notes = "Buscar Orden por Id")
-	public List<Order> findById(@PathVariable String uuid){
+	public Optional<Order> findById(@PathVariable String uuid){
 
-		return super.service.findById(uuid).stream().collect(Collectors.toList());
+		return super.service.findById(uuid);
 	}
 
-	@RequestMapping(value="/findAll/{userUUID}", method= RequestMethod.POST)
-	@ApiOperation(value = "Buscar Orden de un usuario", notes = "Buscar Orden de un usuario")
+	@RequestMapping(value="/findAll/{uuid}", method= RequestMethod.POST)
+	@ApiOperation(value = "Buscar una orden de un usuario", notes = "Buscar una orden de un usuario")
 	public List<Order> findAll(@PathVariable String uuid){
 
 		return super.service.findById(uuid).stream().collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 	}
 
 	@RequestMapping(value="/csv/{uuid}",method = RequestMethod.GET)
-	@ApiOperation(value = "Obtener CSV de la Orden", notes = "Obtener CSV de la Orden")
+	@ApiOperation(value = "Obtener CSV de una orden", notes = "Obtener CSV de una orden")
 	public ResponseEntity<HttpStatus> getCSV(@PathVariable String uuid){
 
 		orderService.getCSV(uuid);

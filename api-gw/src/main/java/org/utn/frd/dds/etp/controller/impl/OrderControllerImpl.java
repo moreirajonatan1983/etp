@@ -13,7 +13,9 @@ import org.utn.frd.dds.etp.controller.OrderController;
 import org.utn.frd.dds.etp.entity.Order;
 import org.utn.frd.dds.etp.service.impl.OrderServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("orders")
@@ -53,25 +55,21 @@ public class OrderControllerImpl extends CrudControllerImpl<Order, String> imple
 	@ApiOperation(value = "Buscar Orden por Id", notes = "Buscar Orden por Id")
 	public Optional<Order> findById(@PathVariable String uuid){
 
-		super.service.findById(uuid).get();
-		return null;
+		return super.service.findById(uuid).stream().collect(Collectors.toList());
 	}
 
 	@RequestMapping(value="/findAll/{userUUID}", method= RequestMethod.POST)
 	@ApiOperation(value = "Buscar Orden de un usuario", notes = "Buscar Orden de un usuario")
-	public Optional<Order> findAll(String userUUID){
+	public List<Order> findAll(@PathVariable String uuid){
 
-		super.service.findById(userUUID).get();
-		return null;
+		return super.service.findById(uuid).stream().collect(Collectors.toList());
 	}
 
 	@RequestMapping(value="/qr/{uuid}",method = RequestMethod.GET)
 	@ApiOperation(value = "Obtener codigo QR", notes = "Obtener codigo QR")
-	public ResponseEntity<HttpStatus> getQR(@PathVariable String uuid){
+	public String getQR(@PathVariable String uuid){
 
-		orderService.getQR(uuid);
-
-		return ResponseEntity.ok(HttpStatus.OK);
+		return orderService.getQR(uuid);
 	}
 
 	@RequestMapping(value="/csv/{uuid}",method = RequestMethod.GET)
